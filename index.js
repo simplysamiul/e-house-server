@@ -5,9 +5,17 @@
 
 const express = require("express");
 const app = express();
+const cors = require("cors");
+const { json } = require("express");
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const objectId = require("mongodb").ObjectId;
 const port = process.env.PORT || 5000 ;
 require('dotenv').config();
+
+
+// Middle ware
+app.use(cors());
+app.use(express.json());
 
 
 // Db connect
@@ -26,6 +34,13 @@ async function run(){
             const result = await cursor.toArray();
             res.json(result);
         });
+        // get specific product by id
+        app.get("/allproducts/singel/:id", async(req,res)=>{
+            const id = req.params.id;
+            const query ={_id : objectId(id)};
+            const result = await allProductCollection.findOne(query);
+            res.json(result);
+        })
         // get specific categories product data
         app.get("/allproducts/categories/:categoryname", async(req, res)=>{
             const categoryName = req.params.categoryname;
@@ -33,6 +48,23 @@ async function run(){
             const cursor = allProductCollection.find(query);
             const result = await cursor.toArray();
             res.json(result);
+        });
+        // All arivval products
+        app.get("/allproducts/arrival", async(req,res)=>{
+            const query = {condition : "new"};
+            const page = req.query.page;
+            const dataSize = parseInt(req.query.pagedata);
+            const cursor = allProductCollection.find(query);
+            const count = await cursor.count();
+            let arrivalProducts;
+            if(page){
+                arrivalProducts = await cursor.skip((page-1) * dataSize).limit(dataSize).toArray();
+            }
+            else{
+
+                 arrivalProducts = await cursor.toArray();
+            }
+            res.send({count, arrivalProducts});
         });
         // get new and best sales product
         app.get("/allproducts/:condition", async(req,res)=>{
@@ -47,12 +79,10 @@ async function run(){
                 const query = {sale : productCondition};
                 const cursor = allProductCollection.find(query);
                 const result = await cursor.toArray();
-                res.json(result);
-            }
-            else{
-                res.send("product Not found !!!")
+                res.send(result);
             }
         });
+        
     }finally{
         // await client.close();
     }
