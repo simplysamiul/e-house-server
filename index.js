@@ -66,22 +66,66 @@ async function run(){
             }
             res.send({count, arrivalProducts});
         });
-        // get new and best sales product
-        app.get("/allproducts/:condition", async(req,res)=>{
-            const productCondition = req.params.condition;
-            if(productCondition == "new"){
-                const query = {condition : productCondition};
-                const cursor = allProductCollection.find(query);
-                const result = await cursor.toArray();
-                res.json(result);
+        // Offer products
+        app.get("/allproducts/offerdproducts", async(req,res)=>{
+            const query = {sale : "best"};
+            const cursor = allProductCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+         // get new product
+        app.get("/allproducts/new", async(req,res)=>{
+            const query = {condition : "new"};
+            const page = req.query.page;
+            const dataSize = parseInt(req.query.pagedata);
+            const cursor = allProductCollection.find(query);
+            const count = await cursor.count();
+            let newProducts;
+            if(page){
+                newProducts = await cursor.skip((page-1) * dataSize).limit(dataSize).toArray();
             }
-            else if(productCondition == "best"){
-                const query = {sale : productCondition};
-                const cursor = allProductCollection.find(query);
-                const result = await cursor.toArray();
-                res.send(result);
+            else{
+
+                newProducts = await cursor.toArray();
             }
+            res.send({count, newProducts});
         });
+
+        // get new and best sales product
+        app.get("/allproducts/best", async(req,res)=>{
+                const query = {sale : "best"};
+                const page = req.query.page;
+                const dataSize = parseInt(req.query.pagedata);
+                const cursor = allProductCollection.find(query);
+                const count = await cursor.count();
+                let bestSales;
+                if(page){
+                    bestSales = await cursor.skip((page-1) * dataSize).limit(dataSize).toArray();
+                }
+                else{
+    
+                    bestSales = await cursor.toArray();
+                }
+                res.send({count, bestSales});
+        });
+        
+        // Get shope product
+        app.get("/allproducts/shop", async(req,res)=>{
+            const page = req.query.page;
+            const dataSize = parseInt(req.query.pagedata);
+            const cursor = allProductCollection.find({});
+            const count = await cursor.count();
+            let shopProducts;
+            if(page){
+                shopProducts = await cursor.skip((page-1) * dataSize).limit(dataSize).toArray();
+            }
+            else{
+                shopProducts = await cursor.toArray();
+            }
+            res.send({count, shopProducts});
+        })
+       
         
     }finally{
         // await client.close();
