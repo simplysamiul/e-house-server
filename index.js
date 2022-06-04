@@ -35,12 +35,12 @@ async function run(){
             res.json(result);
         });
         // get specific product by id
-        app.get("/allproducts/singel/:id", async(req,res)=>{
+        app.get("/allproducts/product_details/:id", async(req,res)=>{
             const id = req.params.id;
             const query ={_id : objectId(id)};
             const result = await allProductCollection.findOne(query);
             res.json(result);
-        })
+        });
         // get specific categories product data
         app.get("/allproducts/categories/:categoryname", async(req, res)=>{
             const categoryName = req.params.categoryname;
@@ -55,7 +55,7 @@ async function run(){
             const page = req.query.page;
             const dataSize = parseInt(req.query.pagedata);
             const cursor = allProductCollection.find(query);
-            const count = await cursor.count();
+            const count = await allProductCollection.countDocuments(query);
             let arrivalProducts;
             if(page){
                 arrivalProducts = await cursor.skip((page-1) * dataSize).limit(dataSize).toArray();
@@ -80,7 +80,7 @@ async function run(){
             const page = req.query.page;
             const dataSize = parseInt(req.query.pagedata);
             const cursor = allProductCollection.find(query);
-            const count = await cursor.count();
+            const count = await allProductCollection.countDocuments(query);
             let newProducts;
             if(page){
                 newProducts = await cursor.skip((page-1) * dataSize).limit(dataSize).toArray();
@@ -98,7 +98,7 @@ async function run(){
                 const page = req.query.page;
                 const dataSize = parseInt(req.query.pagedata);
                 const cursor = allProductCollection.find(query);
-                const count = await cursor.count();
+                const count = await allProductCollection.countDocuments(query);
                 let bestSales;
                 if(page){
                     bestSales = await cursor.skip((page-1) * dataSize).limit(dataSize).toArray();
@@ -108,14 +108,13 @@ async function run(){
                     bestSales = await cursor.toArray();
                 }
                 res.send({count, bestSales});
-        });
-        
+        });  
         // Get shope product
         app.get("/allproducts/shop", async(req,res)=>{
             const page = req.query.page;
             const dataSize = parseInt(req.query.pagedata);
             const cursor = allProductCollection.find({});
-            const count = await cursor.count();
+            const count = await allProductCollection.countDocuments({});
             let shopProducts;
             if(page){
                 shopProducts = await cursor.skip((page-1) * dataSize).limit(dataSize).toArray();
@@ -124,8 +123,7 @@ async function run(){
                 shopProducts = await cursor.toArray();
             }
             res.send({count, shopProducts});
-        })
-       
+        }); 
         
     }finally{
         // await client.close();
