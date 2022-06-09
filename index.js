@@ -27,6 +27,7 @@ async function run(){
         await client.connect();
         const database = client.db("eHouseStore");
         const allProductCollection = database.collection("allCategoriesProduct");
+        const userCollecftion = database.collection("user");
 
         // get all categories product
         app.get("/allproducts", async(req, res)=>{
@@ -122,8 +123,24 @@ async function run(){
             else{
                 shopProducts = await cursor.toArray();
             }
-            res.send({count, shopProducts});
-        }); 
+            res.json({count, shopProducts});
+        });
+
+        // Post user
+        app.post("/user", async(req,res)=>{
+            const user = req.body;
+            const result = await userCollecftion.insertOne(user);
+            res.send(result);
+        })
+        // put or update user
+        app.put("/user", async(req,res)=>{
+            const user = req.body;
+            const filter = {email: user.email};
+            const options = {upsert: true};
+            const updateDoc= {$set: user};
+            const result = await userCollecftion.updateOne(filter, updateDoc, options);
+            res.json(result);
+        })
         
     }finally{
         // await client.close();
