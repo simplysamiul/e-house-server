@@ -28,6 +28,7 @@ async function run(){
         const database = client.db("eHouseStore");
         const allProductCollection = database.collection("allCategoriesProduct");
         const userCollecftion = database.collection("user");
+        const shippingCollection = database.collection("shipping");
 
         // get all categories product
         app.get("/allproducts", async(req, res)=>{
@@ -141,6 +142,12 @@ async function run(){
             const result = await userCollecftion.updateOne(filter, updateDoc, options);
             res.json(result);
         })
+        // Post shipping collection
+        app.post("shipping", async(req,res)=>{
+            const shipping = req.body;
+            const result = await shippingCollection.insertOne(shipping);
+            res.send(result);
+        })  
         
     }finally{
         // await client.close();
