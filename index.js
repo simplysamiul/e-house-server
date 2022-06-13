@@ -143,10 +143,11 @@ async function run(){
             res.json(result);
         })
         // Post shipping collection
-        app.post("shipping", async(req,res)=>{
+        app.post("/shipping", async(req,res)=>{
+            console.log(req.body);
             const shipping = req.body;
             const result = await shippingCollection.insertOne(shipping);
-            res.send(result);
+            res.json(result);
         })  
         
     }finally{
