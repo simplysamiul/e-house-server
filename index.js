@@ -126,6 +126,14 @@ async function run(){
             }
             res.json({count, shopProducts});
         });
+        // Get Shipping info
+        app.get("/shipping", async(req,res)=>{
+            const email = req.query.email;
+            const query = {email};
+            const cursor = shippingCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
 
         // Post user
         app.post("/user", async(req,res)=>{
@@ -144,7 +152,6 @@ async function run(){
         })
         // Post shipping collection
         app.put("/shipping", async(req,res)=>{
-            console.log(req.body);
             const shipping = req.body;
             const filter = {email: shipping.email};
             const options = {upsert: true};
