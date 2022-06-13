@@ -143,10 +143,13 @@ async function run(){
             res.json(result);
         })
         // Post shipping collection
-        app.post("/shipping", async(req,res)=>{
+        app.put("/shipping", async(req,res)=>{
             console.log(req.body);
             const shipping = req.body;
-            const result = await shippingCollection.insertOne(shipping);
+            const filter = {email: shipping.email};
+            const options = {upsert: true};
+            const updateDoc = {$set: shipping};
+            const result = await shippingCollection.updateOne(filter, updateDoc, options );
             res.json(result);
         })  
         
