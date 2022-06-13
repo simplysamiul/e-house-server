@@ -130,7 +130,8 @@ async function run(){
         app.get("/shipping", async(req,res)=>{
             const email = req.query.email;
             const query = {email};
-            const result = await shippingCollection.findOne(query);
+            const cursor = shippingCollection.findOne(query);
+            const result = await cursor.toArray();
             res.send(result);
         })
 
