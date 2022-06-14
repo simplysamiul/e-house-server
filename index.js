@@ -178,7 +178,8 @@ async function run(){
         })
         // Stripe payment 
         app.post("/create-payment-intent", async(req,res)=>{
-            const {paymentInfo} = req.body;
+            const paymentInfo = req.body;
+            console.log(paymentInfo);
             const amount = paymentInfo.price * 100;
             const paymentIntent = await stripe.paymentIntents.create({
                 currency: "usd",
@@ -186,7 +187,7 @@ async function run(){
                 automatic_payment_methods: {
                     enabled: true,
                 },
-            });
+            })
             res.json({ clientSecret: paymentIntent.client_secret })
         })
 
