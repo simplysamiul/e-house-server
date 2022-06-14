@@ -188,7 +188,7 @@ async function run(){
                     enabled: true,
                 },
             })
-            res.json({ clientSecret: paymentIntent.client_secret })
+            res.send({ clientSecret: paymentIntent.client_secret })
         })
 
         
