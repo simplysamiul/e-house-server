@@ -9,6 +9,7 @@ const cors = require("cors");
 const { json } = require("express");
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const objectId = require("mongodb").ObjectId;
+const stripe = require("stripe")(process.env.STRIPE_SECRET)
 const port = process.env.PORT || 5000 ;
 require('dotenv').config();
 
@@ -174,6 +175,19 @@ async function run(){
             const updateDoc = {$set: paymentInfo};
             const result = await paymentCollection.updateOne(filter, updateDoc, options);
             res.json(result);
+        })
+        // Stripe payment 
+        app.post("/create-payment-intent", async(req,res)=>{
+            const paymentInfo = req.body;
+            const amount = paymentInfo.price * 100;
+            const paymentIntent = await stripe.paymentIntents.create({
+                currency: "usd",
+                amount: amount,
+                automatic_payment_methods: {
+                    enabled: true,
+                },
+            });
+            res.json({ clientSecret: paymentIntent.client_secret })
         })
 
         
