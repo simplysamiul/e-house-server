@@ -9,9 +9,9 @@ const cors = require("cors");
 const { json } = require("express");
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const objectId = require("mongodb").ObjectId;
-const stripe = require("stripe")(process.env.STRIPE_SECRET)
 const port = process.env.PORT || 5000 ;
 require('dotenv').config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
 
 // Middle ware
