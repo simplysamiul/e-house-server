@@ -29,6 +29,7 @@ async function run(){
         const allProductCollection = database.collection("allCategoriesProduct");
         const userCollecftion = database.collection("user");
         const shippingCollection = database.collection("shipping");
+        const paymentCollection = database.collection("payment");
 
         // get all categories product
         app.get("/allproducts", async(req, res)=>{
@@ -126,12 +127,19 @@ async function run(){
             }
             res.json({count, shopProducts});
         });
-        // Get Shipping info
+        // Get specific Shipping info
         app.get("/shipping", async(req,res)=>{
             const email = req.query.email;
             const query = {email};
             const result = await shippingCollection.findOne(query);
             res.send(result);
+        });
+        // Get specific payment info
+        app.get("/payment", async(req,res)=>{
+            const email = req.query.email;
+            const query = {email};
+            const result = await paymentCollection.findOne(query);
+            res.json(result);
         })
 
         // Post user
@@ -157,7 +165,17 @@ async function run(){
             const updateDoc = {$set: shipping};
             const result = await shippingCollection.updateOne(filter, updateDoc, options );
             res.json(result);
-        })  
+        })
+        // post payment info
+        app.put("/payment", async(req,res)=>{
+            const paymentInfo = req.body;
+            const filter = {email: paymentInfo.email};
+            const options = {upsert: true};
+            const updateDoc = {$set: paymentInfo};
+            const result = await paymentCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+        })
+
         
     }finally{
         // await client.close();
