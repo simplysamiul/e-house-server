@@ -14,8 +14,8 @@ require('dotenv').config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
 // Middle ware
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
 
 // Db connect
