@@ -13,7 +13,6 @@ const port = process.env.PORT || 5000 ;
 require('dotenv').config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
-
 // Middle ware
 app.use(cors());
 app.use(express.json());
@@ -180,7 +179,7 @@ async function run(){
         app.post("/create-payment-intent", async(req,res)=>{
             const paymentInfo = req.body;
             console.log(paymentInfo);
-            const amount = paymentInfo.price * 100;
+            const amount = paymentInfo * 100;
             const paymentIntent = await stripe.paymentIntents.create({
                 currency: "usd",
                 amount: amount,
