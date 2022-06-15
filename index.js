@@ -14,8 +14,8 @@ require('dotenv').config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
 // Middle ware
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
 
 // Db connect
@@ -177,15 +177,13 @@ async function run(){
         })
         // Stripe payment 
         app.post("/create-payment-intent", async(req,res)=>{
-            const paymentInfo = req.body;
-            console.log(paymentInfo);
-            const amount = paymentInfo * 100;
+            const price = req.body.price;
+            const amount = price * 100;
+            console.log(amount);
             const paymentIntent = await stripe.paymentIntents.create({
-                currency: "usd",
                 amount: amount,
-                automatic_payment_methods: {
-                    enabled: true,
-                },
+                currency: "usd",
+                automatic_payment_methods: {enabled: true,}
             })
             res.send({ clientSecret: paymentIntent.client_secret })
         })
