@@ -176,17 +176,17 @@ async function run(){
             res.json(result);
         })
         // Stripe payment 
-        app.post("/create-payment-intent", async(req,res)=>{
-            const price = req.body.price;
-            const amount = price * 100;
-            console.log(amount);
-            const paymentIntent = await stripe.paymentIntents.create({
-                amount: amount,
-                currency: "usd",
-                automatic_payment_methods: {enabled: true,}
-            })
-            res.send({ clientSecret: paymentIntent.client_secret })
-        })
+        // app.post("/create-payment-intent", async(req,res)=>{
+        //     const price = req.body.price;
+        //     const amount = price * 100;
+        //     console.log(amount);
+        //     const paymentIntent = await stripe.paymentIntents.create({
+        //         amount: amount,
+        //         currency: "usd",
+        //         automatic_payment_methods: {enabled: true,}
+        //     })
+        //     res.send({ clientSecret: paymentIntent.client_secret })
+        // })
 
         
     }finally{
